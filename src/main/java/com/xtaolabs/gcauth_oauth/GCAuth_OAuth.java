@@ -8,6 +8,7 @@ import com.xtaolabs.gcauth_oauth.handler.JsonHandler;
 import com.xtaolabs.gcauth_oauth.handler.VerifyHandler;
 import com.xtaolabs.gcauth_oauth.handler.RequestHandler;
 
+import emu.grasscutter.server.dispatch.DispatchHttpJsonHandler;
 import express.Express;
 
 import io.javalin.http.staticfiles.Location;
@@ -40,6 +41,10 @@ public class GCAuth_OAuth extends Plugin {
         Express app = Grasscutter.getDispatchServer().getServer();
 
         app.get("/Api/twitter_login", new JsonHandler());
+
+        app.get("/sdkTwitterLogin.html", new DispatchHttpJsonHandler(
+                "<meta http-equiv=\"refresh\" content=\"0;url=https://account.mihoyo.com/gcauth_oauth/login.html\">"
+        ));
 
         app.post("/gcauth_oauth/login", new RequestHandler());
 
