@@ -38,12 +38,15 @@ public class GCAuth_OAuth extends Plugin {
 
     public void loadTwitterLogin() {
         String folder_name = PLUGINS_FOLDER + "/GCAuth/OAuth/";
+        String Login_Url = ("http" + (DISPATCH_ENCRYPTION.useEncryption ? "s" : "") + "://"
+                + lr(DISPATCH_INFO.accessAddress, DISPATCH_INFO.bindAddress) + ":"
+                + lr(DISPATCH_INFO.accessPort, DISPATCH_INFO.bindPort) + "/gcauth_oauth/login.html");
         Express app = Grasscutter.getDispatchServer().getServer();
 
         app.get("/Api/twitter_login", new JsonHandler());
 
         app.get("/sdkTwitterLogin.html", new DispatchHttpJsonHandler(
-                "<meta http-equiv=\"refresh\" content=\"0;url=https://account.mihoyo.com/gcauth_oauth/login.html\">"
+                String.format("<meta http-equiv=\"refresh\" content=\"0;url=%s\">", Login_Url)
         ));
 
         app.post("/gcauth_oauth/login", new RequestHandler());
