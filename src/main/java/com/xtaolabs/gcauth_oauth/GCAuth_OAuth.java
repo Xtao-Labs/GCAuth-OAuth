@@ -1,15 +1,12 @@
 package com.xtaolabs.gcauth_oauth;
 
+import com.xtaolabs.gcauth_oauth.handler.*;
+
 import emu.grasscutter.Grasscutter;
+import emu.grasscutter.auth.DefaultAuthentication;
 import emu.grasscutter.plugin.Plugin;
+import emu.grasscutter.server.http.HttpServer;
 import static emu.grasscutter.Configuration.*;
-
-import com.xtaolabs.gcauth_oauth.handler.JsonHandler;
-import com.xtaolabs.gcauth_oauth.handler.VerifyHandler;
-import com.xtaolabs.gcauth_oauth.handler.RequestHandler;
-
-import emu.grasscutter.server.dispatch.DispatchHttpJsonHandler;
-import express.Express;
 
 import io.javalin.http.staticfiles.Location;
 
@@ -31,28 +28,21 @@ public class GCAuth_OAuth extends Plugin {
 
     @Override
     public void onDisable() {
-        Express app = Grasscutter.getDispatchServer().getServer();
-        app.disable("/Api/twitter_login");
+        Grasscutter.setAuthenticationSystem(new DefaultAuthentication());
         Grasscutter.getLogger().info("[GCAuth_OAuth] Disabled");
     }
 
     public void loadTwitterLogin() {
         String folder_name = PLUGINS_FOLDER + "/GCAuth/OAuth/";
-        String Login_Url = ("http" + (DISPATCH_ENCRYPTION.useEncryption ? "s" : "") + "://"
-                + lr(DISPATCH_INFO.accessAddress, DISPATCH_INFO.bindAddress) + ":"
-                + lr(DISPATCH_INFO.accessPort, DISPATCH_INFO.bindPort) + "/gcauth_oauth/login.html");
-        Express app = Grasscutter.getDispatchServer().getServer();
+        Grasscutter.setAuthenticationSystem(new GCAuthAuthenticationHandler());
 
-        app.get("/Api/twitter_login", new JsonHandler());
+        HttpServer app = Grasscutter.getHttpServer();
 
-        app.get("/sdkTwitterLogin.html", new DispatchHttpJsonHandler(
-                String.format("<meta http-equiv=\"refresh\" content=\"0;url=%s\">", Login_Url)
-        ));
+        app.addRouter(JsonHandler.class);
+        app.addRouter(RequestHandler.class);
+        app.addRouter(sdkHandler.class);
+        app.addRouter(VerifyHandler.class);
 
-        app.post("/gcauth_oauth/login", new RequestHandler());
-
-        app.post("/hk4e_global/mdk/shield/api/loginByThirdparty", new VerifyHandler());
-
-        app.raw().config.addStaticFiles("/gcauth_oauth", folder_name, Location.EXTERNAL);
+        app.getHandle().config.addStaticFiles("/gcauth_oauth", folder_name, Location.EXTERNAL);
     }
 }

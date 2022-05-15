@@ -1,22 +1,32 @@
 package com.xtaolabs.gcauth_oauth.handler;
 
-import java.io.IOException;
-
 import com.auth0.jwt.interfaces.DecodedJWT;
+
 import com.xtaolabs.gcauth_oauth.json.VerifyJson;
 import com.xtaolabs.gcauth_oauth.utils.parse;
+
+import emu.grasscutter.server.http.Router;
+import emu.grasscutter.server.http.objects.LoginResultJson;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.game.Account;
-import emu.grasscutter.server.dispatch.json.LoginResultJson;
-import express.http.HttpContextHandler;
+
+import express.Express;
 import express.http.Request;
 import express.http.Response;
+
+import io.javalin.Javalin;
+
 import me.exzork.gcauth.utils.Authentication;
 
 
-public final class VerifyHandler implements HttpContextHandler {
+public final class VerifyHandler implements Router {
+
     @Override
-    public void handle(Request req, Response res) throws IOException {
+    public void applyRoutes(Express express, Javalin javalin) {
+        express.post("/hk4e_global/mdk/shield/api/loginByThirdparty", VerifyHandler::handle);
+    }
+
+    public static void handle(Request req, Response res) {
         VerifyJson request = req.body(VerifyJson.class);
         LoginResultJson responseData = new LoginResultJson();
         DecodedJWT jwt = parse.deToken(request.access_token);

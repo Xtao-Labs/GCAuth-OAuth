@@ -1,18 +1,25 @@
 package com.xtaolabs.gcauth_oauth.handler;
 
-import java.io.IOException;
-
 import emu.grasscutter.game.Account;
-import express.http.HttpContextHandler;
+import emu.grasscutter.server.http.Router;
+
+import express.Express;
 import express.http.Request;
 import express.http.Response;
+
+import io.javalin.Javalin;
 
 import me.exzork.gcauth.utils.Authentication;
 
 
-public final class RequestHandler implements HttpContextHandler {
+public final class RequestHandler implements Router {
+
     @Override
-    public void handle(Request req, Response res) throws IOException {
+    public void applyRoutes(Express express, Javalin javalin) {
+        express.post("/gcauth_oauth/login", RequestHandler::handle);
+    }
+
+    public static void handle(Request req, Response res) {
         String username = req.formData("username");
         String password = req.formData("password");
 
