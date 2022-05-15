@@ -18,6 +18,7 @@
 >
 <header class="appbar mdui-appbar mdui-appbar-fixed">
   <div class="mdui-toolbar mdui-color-theme">
+    <h1 class="title mdui-text-color-theme">GCAuth - OAuth - Login</h1>
     <div class="mdui-toolbar-spacer"></div>
     <a
       href="https://github.com/Xtao-Team/GCAuth-OAuth"
@@ -31,9 +32,8 @@
     </a>
   </div>
 </header>
-  <div class="container p-index mdui-container">
-    </br>
-    <h1 class="title mdui-text-color-theme">GCAuth - OAuth - Login</h1>
+  <div class="container p-index mdui-container" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 400px; max-height: 400px; border: 1px solid gray; border-radius: 20px; padding: 2em;-webkit-box-shadow: 5px 5px 15px 5px #000000; box-shadow: 5px 5px 15px 5px #000000;">
+    <div style="text-align: center; font-size: 2em;">Login</div>
     <form action="/gcauth_oauth/login" method="post" enctype="application/x-www-form-urlencoded" novalidate autocapitalize="off">
         <div class="mdui-textfield mdui-textfield-floating-label">
           <i class="mdui-icon material-icons">account_circle</i>
@@ -46,8 +46,9 @@
           <input class="mdui-textfield-input" type="password" name="password"/>
         </div>
         </br>
-        <div style="text-align:center">
-          <button type="submit" class="mdui-btn mdui-color-theme-accent mdui-ripple">login</button>
+        <div style="text-align:center; margin-top: 2em">
+          <button type="submit" class="mdui-btn mdui-color-theme-accent mdui-ripple">Login</button>
+          <!-- <button style="margin-left: 2em;" class="mdui-btn mdui-color-theme-accent mdui-ripple">注册</button> -->
         </div>
     </form>
   </div>
