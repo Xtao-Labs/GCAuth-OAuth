@@ -4,8 +4,8 @@ The in-game login system for [Grasscutter](https://github.com/Grasscutters/Grass
 
 ## Current Features:
 
-- [x] Use twitter oauth to login
-- [ ] Error page
+- [x] Use Twitter oauth to login
+- [x] Custom pages
 
 ## Important Notes:
 
@@ -53,7 +53,17 @@ plugins
 
 ### Frontend
 
+#### Recommend
+
+[TwitterTheme](https://github.com/SwetyCore/GCAuth-OAuth-TwitterTheme)
+
+- [x] Login page
+- [x] Register page
+- [x] Change password page
+- [x] Error notice
+
+#### Default
+
 [en](https://github.com/Xtao-Team/GCAuth-OAuth/tree/en) [zh](https://github.com/Xtao-Team/GCAuth-OAuth/tree/zh)
 
 - [x] Login page
-- [ ] Error page
