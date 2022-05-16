@@ -16,7 +16,7 @@ import java.io.File;
 public class GCAuth_OAuth extends Plugin {
     @Override
     public void onEnable() {
-        String Login_Html_Path = PLUGINS_FOLDER + "/GCAuth/OAuth/login.html";
+        String Login_Html_Path = PLUGIN("GCAuth/OAuth/login.html");
         File Login_Html = new File(Login_Html_Path);
         if(!Login_Html.exists()) {
             Grasscutter.getLogger().warn(String.format("[GCAuth_OAuth] %s not found", Login_Html_Path));
@@ -33,7 +33,7 @@ public class GCAuth_OAuth extends Plugin {
     }
 
     public void loadTwitterLogin() {
-        String folder_name = PLUGINS_FOLDER + "/GCAuth/OAuth/";
+        String folder_name = PLUGIN("GCAuth/OAuth/");
         Grasscutter.setAuthenticationSystem(new GCAuthAuthenticationHandler());
 
         HttpServer app = Grasscutter.getHttpServer();
