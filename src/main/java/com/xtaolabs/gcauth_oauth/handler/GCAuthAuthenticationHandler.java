@@ -1,6 +1,7 @@
 package com.xtaolabs.gcauth_oauth.handler;
 
 import emu.grasscutter.auth.*;
+import emu.grasscutter.game.Account;
 import emu.grasscutter.server.http.objects.ComboTokenResJson;
 import emu.grasscutter.server.http.objects.LoginResultJson;
 
@@ -23,8 +24,9 @@ public class GCAuthAuthenticationHandler implements AuthenticationSystem {
     }
 
     @Override
-    public boolean verifyUser(String s) {
-        return false;
+    public Account verifyUser(String s) {
+        // Unhandled.
+        return null;
     }
 
     @Override
