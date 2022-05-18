@@ -40,6 +40,6 @@ public class GCAuth_OAuth extends Plugin {
 
         app.addRouter(RequestHandler.class);
 
-        app.getHandle().config.addStaticFiles("gcauth_oauth", folder_name, Location.EXTERNAL);
+        app.getHandle().config.addStaticFiles("/gcauth_oauth", folder_name, Location.EXTERNAL);
     }
 }
