@@ -1,7 +1,7 @@
 {
   "name": "GCAuth_OAuth",
   "description": "The in-game login system for Grasscutter is based on oauth and GCAuth.",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "author": ["omg-xtao"],
   "mainClass": "com.xtaolabs.gcauth_oauth.GCAuth_OAuth"
 }

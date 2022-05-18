@@ -3,6 +3,7 @@ package com.xtaolabs.gcauth_oauth.handler;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.auth.AuthenticationSystem;
 import emu.grasscutter.auth.Authenticator;
+import emu.grasscutter.auth.OAuthAuthenticator;
 import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.Account;
 import emu.grasscutter.server.http.objects.LoginResultJson;
@@ -82,6 +83,32 @@ public class GCAuthenticators {
             }
 
             return response;
+        }
+    }
+
+    /**
+     * Handles authentication requests from OAuth sources.
+     */
+    public static class OAuthAuthentication implements OAuthAuthenticator {
+        @Override
+        public void handleLogin(AuthenticationSystem.AuthenticationRequest request) {
+            assert request.getResponse() != null;
+            VerifyHandler.handle(request.getRequest(), request.getResponse());
+        }
+
+        @Override public void handleDesktopRedirection(AuthenticationSystem.AuthenticationRequest request) {
+            assert request.getResponse() != null;
+            JsonHandler.handle(request.getRequest(), request.getResponse());
+        }
+
+        @Override public void handleMobileRedirection(AuthenticationSystem.AuthenticationRequest request) {
+            assert request.getResponse() != null;
+            sdkHandler.handle(request.getRequest(), request.getResponse());
+        }
+
+        @Override public void handleTokenProcess(AuthenticationSystem.AuthenticationRequest request) {
+            assert request.getResponse() != null;
+            request.getResponse().send("Authentication is not available with the default authentication method.");
         }
     }
 }

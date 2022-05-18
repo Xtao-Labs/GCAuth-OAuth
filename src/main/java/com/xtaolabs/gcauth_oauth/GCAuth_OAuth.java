@@ -38,11 +38,8 @@ public class GCAuth_OAuth extends Plugin {
 
         HttpServer app = Grasscutter.getHttpServer();
 
-        app.addRouter(JsonHandler.class);
         app.addRouter(RequestHandler.class);
-        app.addRouter(sdkHandler.class);
-        app.addRouter(VerifyHandler.class);
 
-        app.getHandle().config.addStaticFiles("/gcauth_oauth", folder_name, Location.EXTERNAL);
+        app.getHandle().config.addStaticFiles("gcauth_oauth", folder_name, Location.EXTERNAL);
     }
 }
