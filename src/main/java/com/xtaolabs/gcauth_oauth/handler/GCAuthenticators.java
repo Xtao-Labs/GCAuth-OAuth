@@ -37,6 +37,7 @@ public final class GCAuthenticators {
             response.data.account.uid = account.getId();
             response.data.account.token = account.generateSessionKey();
             response.data.account.email = account.getEmail();
+            response.data.account.twitter_name = account.getUsername();
 
             GCAuth.getInstance().getLogger().info("[GCAuth] Client " + requestData.account + " logged in");
             return response;
