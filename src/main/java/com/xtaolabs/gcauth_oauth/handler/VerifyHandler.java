@@ -2,12 +2,12 @@ package com.xtaolabs.gcauth_oauth.handler;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 
+import com.xtaolabs.gcauth_oauth.GCAuth_OAuth;
 import com.xtaolabs.gcauth_oauth.json.VerifyJson;
 import com.xtaolabs.gcauth_oauth.utils.parse;
 
 import emu.grasscutter.server.http.Router;
 import emu.grasscutter.server.http.objects.LoginResultJson;
-import emu.grasscutter.Grasscutter;
 import emu.grasscutter.game.Account;
 
 import express.Express;
@@ -32,11 +32,11 @@ public final class VerifyHandler implements Router {
         DecodedJWT jwt = parse.deToken(request.access_token);
         Account account = null;
         if (jwt != null) {
-            account = Authentication.getAccountByOneTimeToken(jwt.getClaim("token").asString());
+            account = Authentication.getAccountByOTP(jwt.getClaim("token").asString());
         }
         // Login
         if(account == null) {
-            Grasscutter.getLogger().info("[GCAuth] Client " + req.ip() + " failed to log in");
+            GCAuth_OAuth.getInstance().getLogger().info("Client " + req.ip() + " failed to log in");
             responseData.retcode = -201;
             responseData.message = "Token is invalid";
             res.send(responseData);
@@ -50,7 +50,7 @@ public final class VerifyHandler implements Router {
         responseData.data.account.email = account.getEmail();
         responseData.data.account.twitter_name = account.getUsername();
 
-        Grasscutter.getLogger().info(String.format("[GCAuth] Client %s logged in as %s", req.ip(), responseData.data.account.uid));
+        GCAuth_OAuth.getInstance().getLogger().info(String.format("Client %s logged in as %s", req.ip(), responseData.data.account.uid));
 
         res.send(responseData);
     }

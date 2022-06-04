@@ -1,11 +1,13 @@
 package com.xtaolabs.gcauth_oauth.handler;
 
 import emu.grasscutter.auth.*;
+import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.Account;
 import emu.grasscutter.server.http.objects.ComboTokenResJson;
 import emu.grasscutter.server.http.objects.LoginResultJson;
 
 import me.exzork.gcauth.handler.GCAuthExternalAuthenticator;
+import me.exzork.gcauth.utils.Authentication;
 
 public class GCAuthAuthenticationHandler implements AuthenticationSystem {
     private final Authenticator<LoginResultJson> gcAuthAuthenticator = new GCAuthenticators.GCAuthAuthenticator();
@@ -16,7 +18,8 @@ public class GCAuthAuthenticationHandler implements AuthenticationSystem {
 
     @Override
     public void createAccount(String username, String password) {
-        // Unhandled.
+        password = Authentication.generateHash(password);
+        DatabaseHelper.createAccountWithPassword(username, password);
     }
 
     @Override
@@ -26,8 +29,11 @@ public class GCAuthAuthenticationHandler implements AuthenticationSystem {
 
     @Override
     public Account verifyUser(String s) {
-        // Unhandled.
-        return null;
+        String uid = Authentication.getUsernameFromJwt(s);
+        if (uid == null) {
+            return null;
+        }
+        return DatabaseHelper.getAccountById(uid);
     }
 
     @Override

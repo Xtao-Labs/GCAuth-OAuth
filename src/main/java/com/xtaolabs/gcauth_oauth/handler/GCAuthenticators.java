@@ -1,5 +1,6 @@
 package com.xtaolabs.gcauth_oauth.handler;
 
+import com.xtaolabs.gcauth_oauth.GCAuth_OAuth;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.auth.AuthenticationSystem;
 import emu.grasscutter.auth.Authenticator;
@@ -7,11 +8,14 @@ import emu.grasscutter.auth.OAuthAuthenticator;
 import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.Account;
 import emu.grasscutter.server.http.objects.LoginResultJson;
-import static emu.grasscutter.utils.Language.translate;
 
+import me.exzork.gcauth.GCAuth;
 import me.exzork.gcauth.utils.Authentication;
 
-public class GCAuthenticators {
+import static emu.grasscutter.Configuration.ACCOUNT;
+import static emu.grasscutter.utils.Language.translate;
+
+public final class GCAuthenticators {
 
     public static class GCAuthAuthenticator implements Authenticator<LoginResultJson> {
         @Override
@@ -21,11 +25,10 @@ public class GCAuthenticators {
             var requestData = authenticationRequest.getPasswordRequest();
             assert requestData != null; // This should never be null.
 
-            Account account = Authentication.getAccountByOneTimeToken(requestData.account);
+            Account account = Authentication.getAccountByOTP(requestData.account);
             if(account == null) {
-                Grasscutter.getLogger().info("[GCAuth] Client " + requestData.account + " tried to login with invalid one time token.");
                 response.retcode = -201;
-                response.message = "Token is invalid";
+                response.message = "OTP invalid";
                 return response;
             }
 
@@ -34,9 +37,8 @@ public class GCAuthenticators {
             response.data.account.uid = account.getId();
             response.data.account.token = account.generateSessionKey();
             response.data.account.email = account.getEmail();
-            response.data.account.twitter_name = account.getUsername();
 
-            Grasscutter.getLogger().info("[GCAuth] Client " + requestData.account + " logged in");
+            GCAuth.getInstance().getLogger().info("[GCAuth] Client " + requestData.account + " logged in");
             return response;
         }
     }
@@ -54,34 +56,46 @@ public class GCAuthenticators {
 
             boolean successfulLogin;
             String address = request.getRequest().ip();
+            String loggerMessage;
+            int playerCount = Grasscutter.getGameServer().getPlayers().size();
 
             // Log the attempt.
-            Grasscutter.getLogger().info(translate("messages.dispatch.account.login_token_attempt", address));
+            GCAuth_OAuth.getInstance().getLogger().info(translate("messages.dispatch.account.login_token_attempt", address));
 
-            // Get account from database.
-            Account account = DatabaseHelper.getAccountById(requestData.uid);
+            if (ACCOUNT.maxPlayer <= -1 || playerCount < ACCOUNT.maxPlayer) {
 
-            // Check if account exists/token is valid.
-            successfulLogin = account != null && account.getSessionKey().equals(requestData.token);
+                // Get account from database.
+                Account account = DatabaseHelper.getAccountById(requestData.uid);
 
-            // Set response data.
-            if(successfulLogin) {
-                response.message = "OK";
-                response.data.account.uid = account.getId();
-                response.data.account.token = account.getSessionKey();
-                response.data.account.email = account.getEmail();
-                response.data.account.twitter_name = account.getUsername();
+                // Check if account exists/token is valid.
+                successfulLogin = account != null && account.getSessionKey().equals(requestData.token);
 
-                // Log the login.
-                Grasscutter.getLogger().info(translate("messages.dispatch.account.login_token_success", address, requestData.uid));
+                // Set response data.
+                if (successfulLogin) {
+                    response.message = "OK";
+                    response.data.account.uid = account.getId();
+                    response.data.account.token = account.getSessionKey();
+                    response.data.account.email = account.getEmail();
+                    response.data.account.twitter_name = account.getUsername();
+
+                    // Log the login.
+                    loggerMessage = translate("messages.dispatch.account.login_token_success", address, requestData.uid);
+                } else {
+                    response.retcode = -201;
+                    response.message = translate("messages.dispatch.account.account_cache_error");
+
+                    // Log the failure.
+                    loggerMessage = translate("messages.dispatch.account.login_token_error", address);
+                }
+
             } else {
                 response.retcode = -201;
-                response.message = translate("messages.dispatch.account.account_cache_error");
+                response.message = translate("messages.dispatch.account.server_max_player_limit");
 
-                // Log the failure.
-                Grasscutter.getLogger().info(translate("messages.dispatch.account.login_token_error", address));
+                loggerMessage = translate("messages.dispatch.account.login_max_player_limit", address);
             }
 
+            GCAuth_OAuth.getInstance().getLogger().info(loggerMessage);
             return response;
         }
     }
@@ -95,18 +109,20 @@ public class GCAuthenticators {
             assert request.getResponse() != null;
             VerifyHandler.handle(request.getRequest(), request.getResponse());
         }
-
-        @Override public void handleDesktopRedirection(AuthenticationSystem.AuthenticationRequest request) {
+        /**
+         * The type of the client.
+         * Used for handling redirection.
+         */
+        @Override
+        public void handleRedirection(AuthenticationSystem.AuthenticationRequest request, ClientType type) {
             assert request.getResponse() != null;
-            JsonHandler.handle(request.getRequest(), request.getResponse());
+            switch (type) {
+                case DESKTOP -> DesktopRedirectHandler.handle(request.getRequest(), request.getResponse());
+                case MOBILE -> MobileRedirectHandler.handle(request.getRequest(), request.getResponse());
+            }
         }
-
-        @Override public void handleMobileRedirection(AuthenticationSystem.AuthenticationRequest request) {
-            assert request.getResponse() != null;
-            sdkHandler.handle(request.getRequest(), request.getResponse());
-        }
-
-        @Override public void handleTokenProcess(AuthenticationSystem.AuthenticationRequest request) {
+        @Override
+        public void handleTokenProcess(AuthenticationSystem.AuthenticationRequest request) {
             assert request.getResponse() != null;
             request.getResponse().send("Authentication is not available with the default authentication method.");
         }

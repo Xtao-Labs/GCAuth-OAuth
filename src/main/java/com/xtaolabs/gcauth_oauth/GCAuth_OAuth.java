@@ -14,22 +14,26 @@ import java.io.File;
 
 
 public class GCAuth_OAuth extends Plugin {
+    public static GCAuth_OAuth getInstance() {
+        return (GCAuth_OAuth) Grasscutter.getPluginManager().getPlugin("GCAuth_OAuth");
+    }
+
     @Override
     public void onEnable() {
         String Login_Html_Path = PLUGIN("GCAuth/OAuth/login.html");
         File Login_Html = new File(Login_Html_Path);
         if(!Login_Html.exists()) {
-            Grasscutter.getLogger().warn(String.format("[GCAuth_OAuth] %s not found", Login_Html_Path));
+            getLogger().warn(String.format("%s not found", Login_Html_Path));
         } else {
             loadTwitterLogin();
-            Grasscutter.getLogger().info("[GCAuth_OAuth] Enabled");
+            getLogger().info("GCAuth_OAuth Enabled");
         }
     }
 
     @Override
     public void onDisable() {
         Grasscutter.setAuthenticationSystem(new DefaultAuthentication());
-        Grasscutter.getLogger().info("[GCAuth_OAuth] Disabled");
+        getLogger().info("GCAuth_OAuth Disabled");
     }
 
     public void loadTwitterLogin() {
