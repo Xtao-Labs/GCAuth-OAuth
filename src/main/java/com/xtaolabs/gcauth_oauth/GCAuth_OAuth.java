@@ -6,7 +6,7 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.auth.DefaultAuthentication;
 import emu.grasscutter.plugin.Plugin;
 import emu.grasscutter.server.http.HttpServer;
-import static emu.grasscutter.Configuration.*;
+import static emu.grasscutter.config.Configuration.PLUGIN;
 
 import io.javalin.http.staticfiles.Location;
 

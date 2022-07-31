@@ -1,7 +1,7 @@
 package com.xtaolabs.gcauth_oauth.handler;
 
 import emu.grasscutter.server.http.Router;
-import static emu.grasscutter.Configuration.*;
+import static emu.grasscutter.config.Configuration.*;
 
 import express.Express;
 import express.http.Request;

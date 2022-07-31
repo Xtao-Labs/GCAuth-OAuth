@@ -8,11 +8,10 @@ import emu.grasscutter.auth.OAuthAuthenticator;
 import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.Account;
 import emu.grasscutter.server.http.objects.LoginResultJson;
-
 import me.exzork.gcauth.GCAuth;
 import me.exzork.gcauth.utils.Authentication;
 
-import static emu.grasscutter.Configuration.ACCOUNT;
+import static emu.grasscutter.config.Configuration.ACCOUNT;
 import static emu.grasscutter.utils.Language.translate;
 
 public final class GCAuthenticators {

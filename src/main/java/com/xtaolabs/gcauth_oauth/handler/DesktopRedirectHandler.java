@@ -7,7 +7,7 @@ import express.http.Response;
 
 import io.javalin.Javalin;
 
-import static emu.grasscutter.Configuration.*;
+import static emu.grasscutter.config.Configuration.*;
 
 
 public final class DesktopRedirectHandler implements Router {
